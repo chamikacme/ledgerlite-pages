@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LedgerLite | Interactive Project Blueprint</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chosen Palette: Warm Neutrals & Slate. 
+         Background: #f5f5f4 (Stone-100), 
+         Surface: #ffffff (White), 
+         Text: #1c1917 (Stone-900), 
+         Primary: #475569 (Slate-600), 
+         Accent: #0ea5e9 (Sky-500) -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        slate: { 850: '#1e293b' },
+                        stone: { 50: '#fafaf9', 100: '#f5f5f4', 800: '#292524' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #f5f5f4;
+            color: #292524;
+        }
+
+        .card {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            height: 400px;
+            max-height: 500px;
+        }
+
+        /* Custom scrollbar for cleanliness */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #e7e5e4;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #a8a29e;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+    <!-- Navigation -->
+    <nav class="bg-white border-b border-stone-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center gap-2">
+                        <span class="text-2xl">📒</span>
+                        <span class="font-bold text-xl tracking-tight text-slate-800">LedgerLite <span
+                                class="text-xs font-medium text-slate-500 uppercase tracking-wide ml-2">Spec
+                                v1.0</span></span>
+                    </div>
+                </div>
+                <div class="hidden sm:flex sm:items-center sm:space-x-8">
+                    <button onclick="scrollToSection('architecture')"
+                        class="text-stone-600 hover:text-slate-700 px-3 py-2 rounded-md text-sm font-medium transition-colors">Architecture</button>
+                    <button onclick="scrollToSection('logic-lab')"
+                        class="text-stone-600 hover:text-slate-700 px-3 py-2 rounded-md text-sm font-medium transition-colors">Core
+                        Logic</button>
+                    <button onclick="scrollToSection('scope-matrix')"
+                        class="text-stone-600 hover:text-slate-700 px-3 py-2 rounded-md text-sm font-medium transition-colors">Scope
+                        Matrix</button>
+                    <button onclick="scrollToSection('features')"
+                        class="bg-slate-800 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-slate-700 transition-colors">View
+                        Requirements</button>
+                </div>
+                <!-- Mobile menu button placeholder (simplified) -->
+                <div class="flex items-center sm:hidden">
+                    <button class="text-stone-500 hover:text-stone-700">☰</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="bg-white">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl font-extrabold text-slate-900 sm:text-5xl sm:tracking-tight lg:text-6xl">
+                Simplified Finance. <span class="text-sky-600">Double-Entry Power.</span>
+            </h1>
+            <p class="mt-4 max-w-2xl mx-auto text-xl text-stone-500">
+                An interactive blueprint for the <strong>LedgerLite</strong> development project.
+                Analyzing the requirements for a modern, mobile-first, Next.js personal finance manager.
+            </p>
+            <div class="mt-8 flex justify-center gap-4">
+                <div
+                    class="flex items-center gap-2 px-4 py-2 bg-stone-100 rounded-full text-stone-600 text-sm font-semibold">
+                    <span>📱</span> Mobile First
+                </div>
+                <div
+                    class="flex items-center gap-2 px-4 py-2 bg-stone-100 rounded-full text-stone-600 text-sm font-semibold">
+                    <span>🔐</span> Clerk Auth
+                </div>
+                <div
+                    class="flex items-center gap-2 px-4 py-2 bg-stone-100 rounded-full text-stone-600 text-sm font-semibold">
+                    <span>🗄️</span> PostgreSQL
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+
+        <!-- Application Structure Plan:
+             1. Technical Architecture: A grid layout visualizing the stack components.
+             2. Logic Lab: An interactive simulation of the "Double Entry" requirement to ensure devs understand the core constraint.
+             3. Scope Matrix: A Chart.js visualization of features mapped by priority vs complexity.
+             4. Feature Breakdown: A categorized list of requirements (MVP, Good-to-Have, Exclusions).
+        -->
+
+        <!-- SECTION 1: Technical Architecture -->
+        <section id="architecture" class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="text-left mb-8">
+                <h2 class="text-3xl font-bold text-slate-900">1. Technical Architecture</h2>
+                <p class="mt-2 text-stone-600 max-w-3xl">
+                    The foundation of LedgerLite relies on a modern, type-safe stack. This section outlines the
+                    mandatory technologies and their specific roles in the application architecture.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Frontend -->
+                <div
+                    class="card bg-white p-6 rounded-xl border border-stone-200 shadow-sm relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-sky-500"></div>
+                    <div class="flex justify-between items-start">
+                        <h3 class="text-lg font-bold text-slate-800">Frontend</h3>
+                        <span class="text-2xl">⚛️</span>
+                    </div>
+                    <p class="text-sm font-semibold text-sky-600 mt-1">Next.js (App Router)</p>
+                    <p class="text-stone-500 text-sm mt-3 leading-relaxed">
+                        Server-centric rendering for high performance. Must use <strong>TypeScript</strong> for strict
+                        type safety across the entire application.
+                    </p>
+                    <div class="mt-4 pt-4 border-t border-stone-100">
+                        <span
+                            class="inline-flex items-center rounded-md bg-stone-50 px-2 py-1 text-xs font-medium text-stone-600 ring-1 ring-inset ring-stone-500/10">Shadcn
+                            UI</span>
+                        <span
+                            class="inline-flex items-center rounded-md bg-stone-50 px-2 py-1 text-xs font-medium text-stone-600 ring-1 ring-inset ring-stone-500/10 ml-2">Tailwind</span>
+                    </div>
+                </div>
+
+                <!-- Backend / Data -->
+                <div class="card bg-white p-6 rounded-xl border border-stone-200 shadow-sm relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-indigo-500"></div>
+                    <div class="flex justify-between items-start">
+                        <h3 class="text-lg font-bold text-slate-800">Data Layer</h3>
+                        <span class="text-2xl">🐘</span>
+                    </div>
+                    <p class="text-sm font-semibold text-indigo-600 mt-1">PostgreSQL</p>
+                    <p class="text-stone-500 text-sm mt-3 leading-relaxed">
+                        ACID-compliant relational database required to ensure data integrity for double-entry
+                        bookkeeping.
+                    </p>
+                    <div class="mt-4 pt-4 border-t border-stone-100">
+                        <span
+                            class="inline-flex items-center rounded-md bg-stone-50 px-2 py-1 text-xs font-medium text-stone-600 ring-1 ring-inset ring-stone-500/10">Prisma
+                            / Drizzle</span>
+                    </div>
+                </div>
+
+                <!-- Auth -->
+                <div class="card bg-white p-6 rounded-xl border border-stone-200 shadow-sm relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-emerald-500"></div>
+                    <div class="flex justify-between items-start">
+                        <h3 class="text-lg font-bold text-slate-800">Authentication</h3>
+                        <span class="text-2xl">🛡️</span>
+                    </div>
+                    <p class="text-sm font-semibold text-emerald-600 mt-1">Clerk</p>
+                    <p class="text-stone-500 text-sm mt-3 leading-relaxed">
+                        Managed authentication handling user registration, login, and secure session management out of
+                        the box.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: Logic Lab (Double Entry) -->
+        <section id="logic-lab" class="bg-stone-100 border-y border-stone-200 py-12">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <span class="text-sky-600 font-bold tracking-wider uppercase text-xs">Core Requirement</span>
+                        <h2 class="text-3xl font-bold text-slate-900 mt-2">The Double-Entry Mandate</h2>
+                        <p class="mt-4 text-stone-600 text-lg leading-relaxed">
+                            Unlike simple expense trackers, LedgerLite <strong>must</strong> adhere to double-entry
+                            principles. Every transaction moves money <em>from</em> one account <em>to</em> another.
+                        </p>
+
+                        <div class="mt-8 space-y-4">
+                            <div class="flex items-start">
+                                <div
+                                    class="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-sky-100 text-sky-600 font-bold text-sm">
+                                    1</div>
+                                <p class="ml-4 text-sm text-stone-600"><strong>Withdrawal:</strong> Credit Asset
+                                    (decrease) &rarr; Debit Expense (increase).</p>
+                            </div>
+                            <div class="flex items-start">
+                                <div
+                                    class="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-emerald-100 text-emerald-600 font-bold text-sm">
+                                    2</div>
+                                <p class="ml-4 text-sm text-stone-600"><strong>Deposit:</strong> Credit Revenue
+                                    (increase) &rarr; Debit Asset (increase).</p>
+                            </div>
+                            <div class="flex items-start">
+                                <div
+                                    class="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-purple-100 text-purple-600 font-bold text-sm">
+                                    3</div>
+                                <p class="ml-4 text-sm text-stone-600"><strong>Transfer:</strong> Credit Asset A &rarr;
+                                    Debit Asset B.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Logic Simulator -->
+                    <div class="bg-white p-6 rounded-2xl shadow-lg border border-stone-200">
+                        <div class="flex justify-between items-center border-b border-stone-100 pb-4 mb-4">
+                            <h3 class="font-bold text-slate-800">Logic Simulator</h3>
+                            <button id="resetSim" class="text-xs text-stone-400 hover:text-stone-600">Reset
+                                Balances</button>
+                        </div>
+
+                        <!-- Simulator Controls -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                            <div>
+                                <label class="block text-xs font-medium text-stone-500 mb-1">Transaction Type</label>
+                                <select id="transType"
+                                    class="w-full rounded-md border-stone-300 bg-stone-50 text-sm p-2 border focus:ring-2 focus:ring-sky-500 outline-none">
+                                    <option value="withdrawal">Withdrawal (Buy Coffee)</option>
+                                    <option value="deposit">Deposit (Salary)</option>
+                                    <option value="transfer">Transfer (Savings)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-stone-500 mb-1">Amount</label>
+                                <input type="number" id="transAmount" value="50"
+                                    class="w-full rounded-md border-stone-300 bg-stone-50 text-sm p-2 border focus:ring-2 focus:ring-sky-500 outline-none">
+                            </div>
+                        </div>
+
+                        <button id="runTrans"
+                            class="w-full bg-slate-800 text-white py-2 rounded-md text-sm font-semibold hover:bg-slate-700 transition active:scale-95 mb-6">
+                            Execute Transaction
+                        </button>
+
+                        <!-- Visual Flow -->
+                        <div class="relative grid grid-cols-2 gap-8">
+                            <!-- Left: Source -->
+                            <div id="sourceBox"
+                                class="bg-stone-50 p-4 rounded-lg border border-stone-200 text-center transition-colors duration-300">
+                                <p class="text-xs text-stone-400 uppercase font-bold tracking-wider mb-1">Source
+                                    (Credit)</p>
+                                <div id="sourceName" class="font-bold text-slate-700">Asset Account</div>
+                                <div id="sourceBal" class="text-2xl font-mono text-slate-900 mt-2">$1000</div>
+                            </div>
+
+                            <!-- Arrow -->
+                            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                <div class="bg-white p-1 rounded-full border border-stone-200 shadow-sm z-10">
+                                    ➡️
+                                </div>
+                            </div>
+
+                            <!-- Right: Destination -->
+                            <div id="destBox"
+                                class="bg-stone-50 p-4 rounded-lg border border-stone-200 text-center transition-colors duration-300">
+                                <p class="text-xs text-stone-400 uppercase font-bold tracking-wider mb-1">Destination
+                                    (Debit)</p>
+                                <div id="destName" class="font-bold text-slate-700">Expense Account</div>
+                                <div id="destBal" class="text-2xl font-mono text-slate-900 mt-2">$0</div>
+                            </div>
+                        </div>
+                        <p id="logicFeedback" class="text-center text-xs text-stone-500 mt-4 h-4 italic"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: Scope & Features Analysis -->
+        <section id="scope-matrix" class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="text-left mb-6">
+                <h2 class="text-3xl font-bold text-slate-900">3. Scope Matrix</h2>
+                <p class="mt-2 text-stone-600">
+                    Feature prioritization based on necessity vs. implementation complexity.
+                </p>
+            </div>
+
+            <!-- Chart Container -->
+            <div class="bg-white p-4 rounded-xl border border-stone-200 shadow-sm mb-12">
+                <div class="chart-container">
+                    <canvas id="scopeChart"></canvas>
+                </div>
+                <div class="flex justify-center gap-6 mt-4 text-xs font-medium text-stone-500">
+                    <div class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-slate-700"></span> MVP
+                        Core</div>
+                    <div class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-sky-500"></span>
+                        Good-to-Have</div>
+                    <div class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-red-400"></span> Excluded
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Requirements List -->
+            <div id="features" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+                <!-- MVP Column -->
+                <div class="space-y-4">
+                    <div class="flex items-center gap-2 pb-2 border-b border-slate-200">
+                        <span class="text-lg">🚀</span>
+                        <h3 class="font-bold text-slate-900">MVP Requirements</h3>
+                    </div>
+                    <ul class="space-y-3">
+                        <li
+                            class="bg-white p-3 rounded-lg border border-stone-200 shadow-sm hover:border-slate-300 transition-colors">
+                            <div class="flex justify-between items-start">
+                                <span class="font-semibold text-sm text-slate-800">Primary Currency</span>
+                                <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">Setup</span>
+                            </div>
+                            <p class="text-xs text-stone-500 mt-1">Global setting. All inputs/displays use this single
+                                currency.</p>
+                        </li>
+                        <li
+                            class="bg-white p-3 rounded-lg border border-stone-200 shadow-sm hover:border-slate-300 transition-colors">
+                            <div class="flex justify-between items-start">
+                                <span class="font-semibold text-sm text-slate-800">4 Account Types</span>
+                                <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">Core</span>
+                            </div>
+                            <p class="text-xs text-stone-500 mt-1">Asset, Liability, Expense, Revenue. Supports initial
+                                balance & reconciliation.</p>
+                        </li>
+                        <li
+                            class="bg-white p-3 rounded-lg border border-stone-200 shadow-sm hover:border-slate-300 transition-colors">
+                            <div class="flex justify-between items-start">
+                                <span class="font-semibold text-sm text-slate-800">Budgeting</span>
+                                <span
+                                    class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">Planning</span>
+                            </div>
+                            <p class="text-xs text-stone-500 mt-1">Monthly limits per Category. Track Spent vs Limit.
+                            </p>
+                        </li>
+                        <li
+                            class="bg-white p-3 rounded-lg border border-stone-200 shadow-sm hover:border-slate-300 transition-colors">
+                            <div class="flex justify-between items-start">
+                                <span class="font-semibold text-sm text-slate-800">Recurring Trans.</span>
+                                <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">Auto</span>
+                            </div>
+                            <p class="text-xs text-stone-500 mt-1">Auto-create entries on schedule (Monthly/Bi-weekly).
+                            </p>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Add-ons Column -->
+                <div class="space-y-4">
+                    <div class="flex items-center gap-2 pb-2 border-b border-sky-200">
+                        <span class="text-lg">✨</span>
+                        <h3 class="font-bold text-slate-900">Good-to-Have</h3>
+                    </div>
+                    <ul class="space-y-3">
+                        <li
+                            class="bg-white p-3 rounded-lg border border-stone-200 shadow-sm hover:border-sky-300 transition-colors">
+                            <div class="flex justify-between items-start">
+                                <span class="font-semibold text-sm text-slate-800">CSV Import/Export</span>
+                                <span class="text-xs bg-sky-50 text-sky-600 px-2 py-0.5 rounded-full">Utility</span>
+                            </div>
+                            <p class="text-xs text-stone-500 mt-1">Robust parsing for bank statements and backup.</p>
+                        </li>
+                        <li
+                            class="bg-white p-3 rounded-lg border border-stone-200 shadow-sm hover:border-sky-300 transition-colors">
+                            <div class="flex justify-between items-start">
+                                <span class="font-semibold text-sm text-slate-800">Credit Card Logic</span>
+                                <span class="text-xs bg-sky-50 text-sky-600 px-2 py-0.5 rounded-full">Logic</span>
+                            </div>
+                            <p class="text-xs text-stone-500 mt-1">Track statement balance, due date, and current
+                                spending.</p>
+                        </li>
+                        <li
+                            class="bg-white p-3 rounded-lg border border-stone-200 shadow-sm hover:border-sky-300 transition-colors">
+                            <div class="flex justify-between items-start">
+                                <span class="font-semibold text-sm text-slate-800">Journal Audit View</span>
+                                <span class="text-xs bg-sky-50 text-sky-600 px-2 py-0.5 rounded-full">View</span>
+                            </div>
+                            <p class="text-xs text-stone-500 mt-1">Chronological view of Credit/Debit pairs for
+                                reconciliation.</p>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Exclusions Column -->
+                <div class="space-y-4">
+                    <div class="flex items-center gap-2 pb-2 border-b border-red-200">
+                        <span class="text-lg">🚫</span>
+                        <h3 class="font-bold text-slate-900">Explicit Exclusions</h3>
+                    </div>
+                    <ul class="space-y-3 opacity-75">
+                        <li class="bg-stone-50 p-3 rounded-lg border border-stone-200 border-l-4 border-l-red-300">
+                            <span class="font-semibold text-sm text-slate-800">No Multi-Currency</span>
+                            <p class="text-xs text-stone-500 mt-1">Single currency only.</p>
+                        </li>
+                        <li class="bg-stone-50 p-3 rounded-lg border border-stone-200 border-l-4 border-l-red-300">
+                            <span class="font-semibold text-sm text-slate-800">No Split Transactions</span>
+                            <p class="text-xs text-stone-500 mt-1">1 Category per transaction.</p>
+                        </li>
+                        <li class="bg-stone-50 p-3 rounded-lg border border-stone-200 border-l-4 border-l-red-300">
+                            <span class="font-semibold text-sm text-slate-800">No Public API</span>
+                            <p class="text-xs text-stone-500 mt-1">No webhooks or external integrations.</p>
+                        </li>
+                        <li class="bg-stone-50 p-3 rounded-lg border border-stone-200 border-l-4 border-l-red-300">
+                            <span class="font-semibold text-sm text-slate-800">No Asset Tracking</span>
+                            <p class="text-xs text-stone-500 mt-1">No stock prices or ROI calculation.</p>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-white border-t border-stone-200 mt-12 py-8">
+        <div class="max-w-7xl mx-auto px-4 text-center text-stone-400 text-sm">
+            <p>LedgerLite Project Requirements • Generated for Development Team</p>
+        </div>
+    </footer>
+
+    <!-- Visualization & Content Choices:
+         1. Logic Simulator: Used custom JS/HTML DOM manipulation to visualize the "Double Entry" concept. 
+            Goal: Make the abstract requirement concrete.
+         2. Scope Matrix: Chart.js Bubble Chart. 
+            Goal: Visualize the trade-off between features.
+            X-Axis: Complexity (1-10)
+            Y-Axis: Necessity (1-10)
+            Radius: Effort estimate.
+         3. Tech Stack: Grid layout. Simple, clean, effective for information density.
+    -->
+
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <script>
+        // --- 1. Logic Simulator Script ---
+        const accounts = {
+            asset: { name: "Checking Account", balance: 1000, type: 'asset' },
+            expense: { name: "Groceries Category", balance: 0, type: 'expense' },
+            revenue: { name: "Salary Income", balance: 0, type: 'revenue' },
+            liability: { name: "Credit Card", balance: 0, type: 'liability' },
+            savings: { name: "Savings Account", balance: 500, type: 'asset' }
+        };
+
+        const dom = {
+            sourceBox: document.getElementById('sourceBox'),
+            sourceName: document.getElementById('sourceName'),
+            sourceBal: document.getElementById('sourceBal'),
+            destBox: document.getElementById('destBox'),
+            destName: document.getElementById('destName'),
+            destBal: document.getElementById('destBal'),
+            btn: document.getElementById('runTrans'),
+            reset: document.getElementById('resetSim'),
+            feedback: document.getElementById('logicFeedback')
+        };
+
+        // UI Helpers
+        function formatMoney(amount) {
+            return '$' + amount.toLocaleString();
+        }
+
+        function updateUI(sourceKey, destKey) {
+            const s = accounts[sourceKey];
+            const d = accounts[destKey];
+
+            dom.sourceName.innerText = s.name;
+            dom.sourceBal.innerText = formatMoney(s.balance);
+            dom.destName.innerText = d.name;
+            dom.destBal.innerText = formatMoney(d.balance);
+        }
+
+        function flashBox(element, colorClass) {
+            element.classList.add(colorClass);
+            setTimeout(() => element.classList.remove(colorClass), 600);
+        }
+
+        // Logic
+        document.getElementById('runTrans').addEventListener('click', () => {
+            const type = document.getElementById('transType').value;
+            const amount = parseInt(document.getElementById('transAmount').value) || 0;
+
+            if (amount <= 0) {
+                dom.feedback.innerText = "Please enter a valid amount.";
+                return;
+            }
+
+            let sourceKey, destKey;
+
+            // Define Logic Flow based on Requirement Spec
+            if (type === 'withdrawal') {
+                // Asset -> Expense
+                sourceKey = 'asset';
+                destKey = 'expense';
+                accounts.asset.balance -= amount;
+                accounts.expense.balance += amount; // Expense "increases"
+                dom.feedback.innerText = `Withdrawal: Credit ${accounts.asset.name}, Debit ${accounts.expense.name}`;
+            } else if (type === 'deposit') {
+                // Revenue -> Asset
+                sourceKey = 'revenue';
+                destKey = 'asset';
+                accounts.revenue.balance += amount; // Revenue "increases"
+                accounts.asset.balance += amount;
+                dom.feedback.innerText = `Deposit: Credit ${accounts.revenue.name}, Debit ${accounts.asset.name}`;
+            } else if (type === 'transfer') {
+                // Asset -> Savings
+                sourceKey = 'asset';
+                destKey = 'savings';
+                accounts.asset.balance -= amount;
+                accounts.savings.balance += amount;
+                dom.feedback.innerText = `Transfer: Credit ${accounts.asset.name}, Debit ${accounts.savings.name}`;
+            }
+
+            updateUI(sourceKey, destKey);
+
+            // Visual feedback
+            flashBox(dom.sourceBox, 'bg-red-50');
+            flashBox(dom.sourceBox, 'border-red-200');
+            flashBox(dom.destBox, 'bg-emerald-50');
+            flashBox(dom.destBox, 'border-emerald-200');
+        });
+
+        // Initialize Sim
+        updateUI('asset', 'expense');
+
+        document.getElementById('transType').addEventListener('change', (e) => {
+            const type = e.target.value;
+            if (type === 'withdrawal') updateUI('asset', 'expense');
+            if (type === 'deposit') updateUI('revenue', 'asset');
+            if (type === 'transfer') updateUI('asset', 'savings');
+            dom.feedback.innerText = "";
+        });
+
+        dom.reset.addEventListener('click', () => {
+            accounts.asset.balance = 1000;
+            accounts.expense.balance = 0;
+            accounts.revenue.balance = 0;
+            accounts.savings.balance = 500;
+            updateUI('asset', 'expense');
+            dom.feedback.innerText = "Balances reset.";
+        });
+
+
+        // --- 2. Chart.js Scope Matrix ---
+        const ctx = document.getElementById('scopeChart').getContext('2d');
+
+        // Data derived from Requirements
+        const featuresData = [
+            // MVP (Slate)
+            { x: 3, y: 10, r: 15, label: "Double Entry", type: "MVP" },
+            { x: 2, y: 10, r: 10, label: "Account Types", type: "MVP" },
+            { x: 1, y: 9, r: 8, label: "Currency Setup", type: "MVP" },
+            { x: 5, y: 8, r: 12, label: "Budgeting", type: "MVP" },
+            { x: 6, y: 8, r: 10, label: "Recurring Trans", type: "MVP" },
+            { x: 4, y: 9, r: 10, label: "Dashboard", type: "MVP" },
+
+            // Good to Have (Sky)
+            { x: 6, y: 6, r: 12, label: "Import/Export", type: "Add-on" },
+            { x: 7, y: 7, r: 10, label: "Credit Card Logic", type: "Add-on" },
+            { x: 3, y: 5, r: 8, label: "Journal View", type: "Add-on" },
+
+            // Exclusions (Red) - High Complexity / Low Necessity for Lite
+            { x: 9, y: 2, r: 10, label: "Multi-Currency", type: "Excluded" },
+            { x: 8, y: 3, r: 8, label: "Split Trans", type: "Excluded" },
+            { x: 9, y: 1, r: 12, label: "Public API", type: "Excluded" }
+        ];
+
+        new Chart(ctx, {
+            type: 'bubble',
+            data: {
+                datasets: [
+                    {
+                        label: 'MVP Core',
+                        data: featuresData.filter(d => d.type === 'MVP'),
+                        backgroundColor: '#334155', // Slate-700
+                        borderColor: '#1e293b',
+                    },
+                    {
+                        label: 'Good-to-Have',
+                        data: featuresData.filter(d => d.type === 'Add-on'),
+                        backgroundColor: '#0ea5e9', // Sky-500
+                        borderColor: '#0284c7',
+                    },
+                    {
+                        label: 'Excluded',
+                        data: featuresData.filter(d => d.type === 'Excluded'),
+                        backgroundColor: '#f87171', // Red-400
+                        borderColor: '#ef4444',
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: (ctx) => `${ctx.raw.label} (Comp: ${ctx.raw.x}, Value: ${ctx.raw.y})`
+                        }
+                    },
+                    legend: { display: false }, // Custom legend used in HTML
+                    title: {
+                        display: true,
+                        text: 'Feature Scope: Necessity (Y) vs Complexity (X)',
+                        font: { size: 14, family: 'Inter' },
+                        color: '#57534e'
+                    }
+                },
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Implementation Complexity (Low -> High)' },
+                        min: 0, max: 10,
+                        grid: { display: false }
+                    },
+                    y: {
+                        title: { display: true, text: 'Project Necessity (Low -> High)' },
+                        min: 0, max: 11,
+                        grid: { color: '#e7e5e4' }
+                    }
+                }
+            }
+        });
+
+        // Navigation Scroll Helper
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+
+</html>
